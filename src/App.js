@@ -32,10 +32,10 @@ function Form() {
             packed: false,
             id: Date.now(),
         };
-        const newinitialItems = [...initialItems, newItem];
+        // const newinitialItems = [...initialItems, newItem];
         SetDescription(" ");
         SetQuantity(1);
-        console.log(newItem);
+        // console.log(newItem);
     }
     return (
         <form className="add-form" onSubmit={handleSubmit}>
