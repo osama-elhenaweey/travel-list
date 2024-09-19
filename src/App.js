@@ -1,17 +1,21 @@
 import { useState } from "react";
 import "./style.css";
 
-const initialItems = [
-    { id: 1, description: "Passports", quantity: 2, packed: false },
-    { id: 2, description: "Socks", quantity: 12, packed: true },
-    { id: 3, description: "Charger", quantity: 1, packed: false },
-];
+// const initialItems = [
+//     { id: 1, description: "Passports", quantity: 2, packed: false },
+//     { id: 2, description: "Socks", quantity: 12, packed: true },
+//     { id: 3, description: "Charger", quantity: 1, packed: false },
+// ];
 function App() {
+    const [items, SetItems] = useState([]);
+    function handeleAddItems(item) {
+        SetItems((items) => [...items, item]);
+    }
     return (
         <div className="app">
             <Logo />
-            <Form />
-            <PackingList />
+            <Form onAddItems={handeleAddItems} />
+            <PackingList items={items} />
             <Stats />
         </div>
     );
@@ -19,20 +23,26 @@ function App() {
 function Logo() {
     return <h1> ⛵ FAR AWAY 💼</h1>;
 }
-function Form() {
+function Form({ onAddItems }) {
     const [description, SetDescription] = useState("");
     const [quantity, SetQuantity] = useState(1);
-
+    // const [items, SetItems] = useState([]);
+    // function handeleAddItems(item) {
+    //     SetItems((items) => [...items, item]);
+    // }
+    // Putting the state and the function to the closest parent element so we can use in two siblings element like [form and packinglist] and pass the function and obj as a props
     function handleSubmit(e) {
         e.preventDefault();
         if (!description) return;
-        // const newItem = {
-        //     description,
-        //     quantity,
-        //     packed: false,
-        //     id: Date.now(),
-        // };
-        // const newinitialItems = [...initialItems, newItem];
+        const newItem = {
+            description,
+            quantity,
+            packed: false,
+            id: Date.now(),
+        };
+        // handeleAddItems(newItem);
+        onAddItems(newItem);
+
         SetDescription(" ");
         SetQuantity(1);
         // console.log(newItem);
@@ -60,11 +70,11 @@ function Form() {
         </form>
     );
 }
-function PackingList() {
+function PackingList({ items }) {
     return (
         <div className="list">
             <ul>
-                {initialItems.map((item) => (
+                {items.map((item) => (
                     <Item item={item} key={item.id} />
                 ))}
             </ul>
