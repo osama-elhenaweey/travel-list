@@ -8,14 +8,28 @@ import "./style.css";
 // ];
 function App() {
     const [items, SetItems] = useState([]);
-    function handeleAddItems(item) {
+    function handleAddItems(item) {
         SetItems((items) => [...items, item]);
+    }
+    function handleDeleteItems(id) {
+        SetItems((items) => items.filter((item) => item.id !== id));
+    }
+    function handleToggleItem(id) {
+        SetItems((items) =>
+            items.map((item) =>
+                item.id === id ? { ...item, packed: !item.packed } : item
+            )
+        );
     }
     return (
         <div className="app">
             <Logo />
-            <Form onAddItems={handeleAddItems} />
-            <PackingList items={items} />
+            <Form onAddItems={handleAddItems} />
+            <PackingList
+                items={items}
+                onDeleteItems={handleDeleteItems}
+                onToggleItem={handleToggleItem}
+            />
             <Stats />
         </div>
     );
@@ -70,25 +84,35 @@ function Form({ onAddItems }) {
         </form>
     );
 }
-function PackingList({ items }) {
+function PackingList({ items, onDeleteItems, onToggleItem }) {
     return (
         <div className="list">
             <ul>
                 {items.map((item) => (
-                    <Item item={item} key={item.id} />
+                    <Item
+                        item={item}
+                        onDeleteItems={onDeleteItems}
+                        onToggleItem={onToggleItem}
+                        key={item.id}
+                    />
                 ))}
             </ul>
         </div>
     );
 }
-function Item({ item }) {
+function Item({ item, onDeleteItems, onToggleItem }) {
     return (
         <li>
+            <input
+                type="checkbox"
+                value={item.packed}
+                onChange={() => onToggleItem(item.id)}
+            />
             <span style={item.packed ? { textDecoration: "line-through" } : {}}>
                 {item.quantity + ` `}
                 {item.description}
             </span>
-            <button>❌</button>
+            <button onClick={() => onDeleteItems(item.id)}>❌</button>
         </li>
     );
 }
